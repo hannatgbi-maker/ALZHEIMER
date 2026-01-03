@@ -21,10 +21,10 @@ interface ProgressoData {
 
 interface ProgressoContextType {
   progresso: ProgressoData
-  registrarAtividadeRotina: (concluida: boolean, total: number) => void
+  registrarAtividadeRotina: (concluidas: number, total: number) => void
   registrarExercicioCognitivo: () => void
   registrarAtividadeFisica: () => void
-  registrarLembrete: (cumprido: boolean, total: number) => void
+  registrarLembrete: (cumpridos: number, total: number) => void
   registrarHumorDia: (humor: 'otimo' | 'bom' | 'regular') => void
   resetarProgresso: () => void
 }

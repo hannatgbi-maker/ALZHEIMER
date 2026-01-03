@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Brain, Calendar, Dumbbell, Lightbulb, Heart, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 

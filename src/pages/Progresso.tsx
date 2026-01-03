@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { Badge } from '@/components/ui/badge'
 import { Heart, ArrowLeft, TrendingUp, Calendar, Brain, Dumbbell, Smile, RotateCcw } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProgresso } from '@/context/ProgressoContext'
@@ -20,7 +18,6 @@ import {
 
 export default function Progresso() {
   const { progresso, resetarProgresso } = useProgresso()
-  const [periodo, setPeriodo] = useState<'semana' | 'mes'>('semana')
 
   // Calcular percentuais
   const percentualRotina = progresso.rotinaDiaria.total > 0
