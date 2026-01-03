@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dumbbell, ArrowLeft, Play, AlertTriangle } from 'lucide-react'
+import { Dumbbell, ArrowLeft, Play, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useProgresso } from '@/context/ProgressoContext'
+import { useToast } from '@/hooks/use-toast'
 
 interface AtividadeFisica {
   id: string
@@ -235,7 +237,21 @@ export default function AtividadesFisicas() {
     }
   ]
 
+  const { registrarAtividadeFisica } = useProgresso()
+  const { toast } = useToast()
   const [atividadeSelecionada, setAtividadeSelecionada] = useState<AtividadeFisica | null>(null)
+  const [atividadesRealizadas, setAtividadesRealizadas] = useState<string[]>([])
+
+  const marcarAtividadeRealizada = (id: string) => {
+    if (!atividadesRealizadas.includes(id)) {
+      setAtividadesRealizadas([...atividadesRealizadas, id])
+      registrarAtividadeFisica()
+      toast({
+        title: "Atividade concluída! 💪",
+        description: "Continue mantendo o corpo ativo e saudável.",
+      })
+    }
+  }
 
   const getIntensidadeColor = (intensidade: string) => {
     switch (intensidade) {
@@ -331,6 +347,18 @@ export default function AtividadesFisicas() {
                   ))}
                 </ul>
               </div>
+
+              <Button
+                onClick={() => marcarAtividadeRealizada(atividadeSelecionada.id)}
+                disabled={atividadesRealizadas.includes(atividadeSelecionada.id)}
+                className="w-full"
+                size="lg"
+              >
+                <CheckCircle2 className="w-5 h-5 mr-2" />
+                {atividadesRealizadas.includes(atividadeSelecionada.id)
+                  ? 'Atividade Concluída ✓'
+                  : 'Marcar como Concluída'}
+              </Button>
             </CardContent>
           </Card>
         </div>

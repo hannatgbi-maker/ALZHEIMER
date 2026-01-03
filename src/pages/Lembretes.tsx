@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Clock, ArrowLeft, Plus, Trash2, Bell, Pill, Calendar, AlertCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useProgresso } from '@/context/ProgressoContext'
 import {
   Select,
   SelectContent,
@@ -23,9 +25,11 @@ interface Lembrete {
   horario: string
   data?: string
   importante: boolean
+  cumprido?: boolean
 }
 
 export default function Lembretes() {
+  const { registrarLembrete } = useProgresso()
   const [lembretes, setLembretes] = useState<Lembrete[]>([
     {
       id: '1',
@@ -33,7 +37,8 @@ export default function Lembretes() {
       titulo: 'Medicação matinal',
       descricao: 'Tomar remédio para pressão',
       horario: '08:00',
-      importante: true
+      importante: true,
+      cumprido: false
     },
     {
       id: '2',
@@ -41,7 +46,8 @@ export default function Lembretes() {
       titulo: 'Medicação noturna',
       descricao: 'Tomar remédio antes de dormir',
       horario: '21:00',
-      importante: true
+      importante: true,
+      cumprido: false
     },
     {
       id: '3',
@@ -50,7 +56,8 @@ export default function Lembretes() {
       descricao: 'Dr. Silva - Rua das Flores, 123',
       horario: '14:00',
       data: '2026-01-15',
-      importante: true
+      importante: true,
+      cumprido: false
     },
     {
       id: '4',
@@ -58,7 +65,8 @@ export default function Lembretes() {
       titulo: 'Caminhada',
       descricao: 'Caminhada leve pela casa',
       horario: '10:00',
-      importante: false
+      importante: false,
+      cumprido: false
     }
   ])
 
@@ -70,6 +78,19 @@ export default function Lembretes() {
     data: '',
     importante: false
   })
+
+  const toggleLembrete = (id: string) => {
+    setLembretes(lembretes.map(l =>
+      l.id === id ? { ...l, cumprido: !l.cumprido } : l
+    ))
+  }
+
+  // Atualizar progresso sempre que lembretes mudarem
+  useEffect(() => {
+    const cumpridos = lembretes.filter(l => l.cumprido).length
+    const total = lembretes.length
+    registrarLembrete(cumpridos, total)
+  }, [lembretes])
 
   const adicionarLembrete = () => {
     if (novoLembrete.titulo && novoLembrete.horario) {
@@ -195,7 +216,7 @@ export default function Lembretes() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {lembrete.descricao && (
                         <p className="text-gray-700 dark:text-gray-300">{lembrete.descricao}</p>
                       )}
@@ -210,6 +231,19 @@ export default function Lembretes() {
                             {new Date(lembrete.data).toLocaleDateString('pt-BR')}
                           </div>
                         )}
+                      </div>
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <Checkbox
+                          id={`cumprido-imp-${lembrete.id}`}
+                          checked={lembrete.cumprido}
+                          onCheckedChange={() => toggleLembrete(lembrete.id)}
+                        />
+                        <Label
+                          htmlFor={`cumprido-imp-${lembrete.id}`}
+                          className={`cursor-pointer ${lembrete.cumprido ? 'text-green-600 font-semibold' : ''}`}
+                        >
+                          {lembrete.cumprido ? 'Cumprido ✓' : 'Marcar como cumprido'}
+                        </Label>
                       </div>
                     </div>
                   </CardContent>
@@ -261,6 +295,19 @@ export default function Lembretes() {
                             {new Date(lembrete.data).toLocaleDateString('pt-BR')}
                           </div>
                         )}
+                      </div>
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <Checkbox
+                          id={`cumprido-${lembrete.id}`}
+                          checked={lembrete.cumprido}
+                          onCheckedChange={() => toggleLembrete(lembrete.id)}
+                        />
+                        <Label
+                          htmlFor={`cumprido-${lembrete.id}`}
+                          className={`cursor-pointer text-sm ${lembrete.cumprido ? 'text-green-600 font-semibold' : ''}`}
+                        >
+                          {lembrete.cumprido ? 'Cumprido ✓' : 'Marcar como cumprido'}
+                        </Label>
                       </div>
                     </div>
                   </CardContent>

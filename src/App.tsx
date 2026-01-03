@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ProgressoProvider } from './context/ProgressoContext'
 import Home from './pages/Home'
 import Rotina from './pages/Rotina'
 import ExerciciosCognitivos from './pages/ExerciciosCognitivos'
@@ -9,17 +10,19 @@ import Progresso from './pages/Progresso'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/rotina" element={<Rotina />} />
-        <Route path="/exercicios-cognitivos" element={<ExerciciosCognitivos />} />
-        <Route path="/atividades-fisicas" element={<AtividadesFisicas />} />
-        <Route path="/ideias" element={<Ideias />} />
-        <Route path="/lembretes" element={<Lembretes />} />
-        <Route path="/progresso" element={<Progresso />} />
-      </Routes>
-    </BrowserRouter>
+    <ProgressoProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/rotina" element={<Rotina />} />
+          <Route path="/exercicios-cognitivos" element={<ExerciciosCognitivos />} />
+          <Route path="/atividades-fisicas" element={<AtividadesFisicas />} />
+          <Route path="/ideias" element={<Ideias />} />
+          <Route path="/lembretes" element={<Lembretes />} />
+          <Route path="/progresso" element={<Progresso />} />
+        </Routes>
+      </BrowserRouter>
+    </ProgressoProvider>
   )
 }
 

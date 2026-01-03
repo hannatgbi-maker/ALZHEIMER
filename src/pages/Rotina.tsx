@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Plus, Trash2, Clock, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useProgresso } from '@/context/ProgressoContext'
 
 interface Atividade {
   id: string
@@ -15,6 +16,7 @@ interface Atividade {
 }
 
 export default function Rotina() {
+  const { registrarAtividadeRotina } = useProgresso()
   const [atividades, setAtividades] = useState<Atividade[]>([
     { id: '1', horario: '07:00', titulo: 'Acordar e higiene matinal', concluida: false },
     { id: '2', horario: '08:00', titulo: 'Café da manhã', concluida: false },
@@ -37,6 +39,13 @@ export default function Rotina() {
       ativ.id === id ? { ...ativ, concluida: !ativ.concluida } : ativ
     ))
   }
+
+  // Atualizar progresso sempre que atividades mudarem
+  useEffect(() => {
+    const concluidas = atividades.filter(a => a.concluida).length
+    const total = atividades.length
+    registrarAtividadeRotina(concluidas, total)
+  }, [atividades])
 
   const adicionarAtividade = () => {
     if (novoHorario && novoTitulo) {

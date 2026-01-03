@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Brain, ArrowLeft, Play, CheckCircle2, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useProgresso } from '@/context/ProgressoContext'
+import { useToast } from '@/hooks/use-toast'
 
 interface Exercicio {
   id: string
@@ -180,7 +182,21 @@ export default function ExerciciosCognitivos() {
     }
   ]
 
+  const { registrarExercicioCognitivo } = useProgresso()
+  const { toast } = useToast()
   const [exercicioSelecionado, setExercicioSelecionado] = useState<Exercicio | null>(null)
+  const [exerciciosRealizados, setExerciciosRealizados] = useState<string[]>([])
+
+  const marcarExercicioRealizado = (id: string) => {
+    if (!exerciciosRealizados.includes(id)) {
+      setExerciciosRealizados([...exerciciosRealizados, id])
+      registrarExercicioCognitivo()
+      toast({
+        title: "Exercício concluído! 🎉",
+        description: "Continue estimulando a mente regularmente.",
+      })
+    }
+  }
 
   const getNivelColor = (nivel: string) => {
     switch (nivel) {
@@ -258,6 +274,18 @@ export default function ExerciciosCognitivos() {
                   ))}
                 </ul>
               </div>
+
+              <Button
+                onClick={() => marcarExercicioRealizado(exercicioSelecionado.id)}
+                disabled={exerciciosRealizados.includes(exercicioSelecionado.id)}
+                className="w-full"
+                size="lg"
+              >
+                <CheckCircle2 className="w-5 h-5 mr-2" />
+                {exerciciosRealizados.includes(exercicioSelecionado.id)
+                  ? 'Exercício Concluído ✓'
+                  : 'Marcar como Concluído'}
+              </Button>
             </CardContent>
           </Card>
         </div>
